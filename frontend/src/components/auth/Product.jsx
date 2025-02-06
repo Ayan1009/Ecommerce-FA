@@ -9,9 +9,10 @@ export default function Product({ name, images, description, price }) {
     return () => clearInterval(interval); // Cleanup on unmount
   }, [images]);
   const currentImage = images[currentIndex];
+  
     return (
       <div className="bg-neutral-200 p-4 rounded-lg shadow-md flex flex-col justify-between">
-        <div className="w-full ">
+        <div className="w-full">
           <img
             src={`http://localhost:8000${currentImage}`} // Ensure the URL is correct\
             alt={name}

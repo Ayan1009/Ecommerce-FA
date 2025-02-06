@@ -50,9 +50,11 @@ const Signup = () => {
  axios
  .post("http://localhost:8000/api/v2/user/create-user", newForm, config)
  .then((res) => {
+  alert(res.data.message); // Success message from server
    console.log(res.data); // Success response from server
  })
  .catch((err) => {
+   alert(err.response ? err.response.data.message : err.message); // Error message from server
    console.error(err.response ? err.response.data : err.message); // Error handling
  });
 };
