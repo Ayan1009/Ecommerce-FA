@@ -27,6 +27,7 @@ function Product({ _id, name, images, description, price }) {
       <div className="w-full mt-4">
         <p className="text-lg font-bold my-2">${price.toFixed(2)}</p>
         <button className="w-full text-white px-4 py-2 rounded-md bg-neutral-900 hover:bg-neutral-700 transition duration-300"
+          onClick={() => navigate(`/product/${_id}`)}
         >
           More Info
         </button>
