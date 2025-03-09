@@ -44,10 +44,10 @@ const OrderConfirmation = () => {
                 const cartData = cartResponse.data;
                 // Map cart items to include full image URLs
                 const processedCartItems = cartData.cart.map(item => ({
-                    _id: item.productId._id,
+                    product: item.productId._id,
                     name: item.productId.name,
                     price: item.productId.price,
-                    images: item.productId.images.map(imagePath => `http://localhost:8000${imagePath}`),
+                    image: item.productId.images.map(imagePath => `http://localhost:8000${imagePath}`),
                     quantity: item.quantity,
                 }));
                 setCartItems(processedCartItems);
@@ -66,22 +66,32 @@ const OrderConfirmation = () => {
 
     const handlePlaceOrder = async () => {
         try {
-            setLoading(true);
-            const response = await axios.post('http://localhost:8000/api/v2/order/place', {
+            // setLoading(true);
+            // const response = await axios.post('http://localhost:8000/api/v2/orders/place-order', {
+            // Map cartItems to match the backend expected format
+            const orderItems = cartItems.map(item => ({
+                product: item.product,
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price,
+                image: item.images && item.images.length > 0 ? item.images[0] : '/default-avatar.png'
+            }));
+            // console.log(orderItems);
+            // Construct payload with email, shippingAddress, and orderItems
+            const payload = {
                 email,
-                addressId,
-            });
-            if (response.status !== 200 && response.status !== 201) {
-                throw new Error(response.data.message || 'Failed to place order.');
-            }
-            const data = response.data;
-            console.log('Order placed:', data.order);
-            navigate('/order-success', { state: { order: data.order } });
-        } catch (err) {
-            console.error('Error placing order:', err);
-            setError(err.response?.data?.message || err.message || 'An unexpected error occurred while placing the order.');
-        } finally {
-            setLoading(false);
+                shippingAddress: selectedAddress,
+                orderItems,
+            };
+            // Send POST request to place orders
+            const response = await axios.post('http://localhost:8000/api/v2/orders/place-order', payload);
+            console.log('Orders placed successfully:', response.data);
+
+            // Navigate to an order success page or display a success message
+            navigate('/order-success'); // Adjust route as needed
+        } catch (error) {
+            console.error('Error placing order:', error);
+            // Optionally update error state to display an error message to the user
         }
     };
     if (loading) {
@@ -134,7 +144,7 @@ const OrderConfirmation = () => {
                                     <div key={item._id} className='flex justify-between items-center border p-4 rounded-md'>
                                         <div className='flex items-center'>
                                             <img
-                                                src={item.images && item.images.length > 0 ? item.images[0] : '/default-avatar.png'} // Use first image or fallback
+                                                src={item.image && item.image.length > 0 ? item.image[0] : '/default-avatar.png'} // Use first image or fallback
                                                 alt={item.name}
                                                 className='w-16 h-16 object-cover rounded-md mr-4'
                                             />

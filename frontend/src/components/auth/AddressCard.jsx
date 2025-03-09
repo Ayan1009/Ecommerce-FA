@@ -1,4 +1,4 @@
-export default function Product({_id, country, city, address1, address2, zipCode, addressType,}) {
+export default function AddressCard({_id, country, city, address1, address2, zipCode, addressType,}) {
 	return (
 		<div className="w-full h-max bg-transparent p-5 rounded-lg border border-neutral-600 grid grid-cols-12 gap-5">
 			<div className="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2">
