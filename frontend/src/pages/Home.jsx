@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Product from "../components/auth/Product";
 import NavBar from "../components/auth/nav";
+import axios from "../axiosConfig";
 
 export default function Home() {
 const [products, setProducts] = useState([]);
@@ -8,15 +9,9 @@ const [loading, setLoading] = useState(true); // For loading state
 const [error, setError] = useState(null); // For error handling
 
 useEffect(() => {
-  fetch("http://localhost:8000/api/v2/product/get-products")
+  axios.get("/api/v2/product/get-products")
     .then((res) => {
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      return res.json();
-    })
-    .then((data) => {
-      setProducts(data.products);
+      setProducts(res.data.products);
       setLoading(false);
     })
     .catch((err) => {

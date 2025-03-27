@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
- import axios from 'axios';
+ import axios from '../axiosConfig';
  import NavBar from '../components/auth/nav';
  import { useSelector } from 'react-redux'; // Import useSelector from react-redux
  
@@ -15,7 +15,7 @@ import { useState, useEffect } from 'react';
          try {
              setLoading(true);
              setError('');
-             const response = await axios.get('http://localhost:8000/api/v2/orders/myorders', {
+             const response = await axios.get('/api/v2/orders/myorders', {
                  params: { email: email },
              });
              setOrders(response.data.orders);
@@ -28,9 +28,8 @@ import { useState, useEffect } from 'react';
  
      // Cancel order handler
      const cancelOrder = async (orderId) => {
-         console.log("aa")
          try {
-             const response = await axios.patch(`http://localhost:8000/api/v2/orders/cancel-order/${orderId}`);
+             const response = await axios.patch(`/api/v2/orders/cancel-order/${orderId}`);
              // Update the order in local state: either remove or update its status.
              setOrders((prevOrders) =>
                  prevOrders.map((order) =>

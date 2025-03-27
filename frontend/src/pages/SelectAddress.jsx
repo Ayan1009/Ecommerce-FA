@@ -2,54 +2,32 @@
 import React, { useState, useEffect } from 'react';
 import NavBar from '../components/auth/nav'; // Ensure the path is correct and component name matches
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../axiosConfig';
 import { useSelector } from 'react-redux'; // Import useSelector from react-redux
-// Optionally, if you have a context or a way to get the authenticated user's email, import it
-// import { useAuth } from '../contexts/AuthContext';
+
 const SelectAddress = () => {
     const [addresses, setAddresses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
-    // Optionally, get the authenticated user's email from context or props
-    // const { user } = useAuth();
-    // Retrieve email from Redux state
+    
     const userEmail = useSelector((state) => state.user.email);
     useEffect(() => {
         // Only fetch addresses if email exists
         if (!userEmail) return;
-        const fetchAddresses = async () => {
-            try {
-                const response = await axios.get('http://localhost:8000/api/v2/user/addresses', {
-                    params: { email: userEmail },
-                });
-                if (response.status !== 200) {
-                    // Handle specific HTTP errors
-                    if (response.status === 404) {
-                        throw new Error('User not found.');
-                    } else if (response.status === 400) {
-                        throw new Error('Bad request. Email parameter is missing.');
-                    } else {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                }
-                const data = response.data;
-                // Validate the response structure
-                if (data && Array.isArray(data.addresses)) {
-                    setAddresses(data.addresses);
+            axios.get('/api/v2/user/addresses', { params: { email: userEmail } })
+             .then((res) => {
+                 if (res.data && Array.isArray(res.data.addresses)) {
+                     setAddresses(res.data.addresses);
                 } else {
                     setAddresses([]);
-                    console.warn('Unexpected response structure:', data);
                 }
-            } catch (err) {
+            }) .catch ((err) => {
                 console.error('Error fetching addresses:', err);
                 setError(err.response?.data?.message || err.message || 'An unexpected error occurred.');
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchAddresses();
-    }, [userEmail]);
+            }) .finally (() =>setLoading(false));
+        }, [userEmail]);
+        
     const handleSelectAddress = (addressId) => {
         // Navigate to Order Confirmation with the selected address ID and email
         navigate('/order-confirmation', { state: { addressId, email: userEmail } });
