@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from 'axios';
+import axios from '../axiosConfig';
 import { useParams, useNavigate } from "react-router-dom";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import NavBar from "../components/auth/nav";
@@ -28,7 +28,7 @@ const CreateProduct = () => {
   useEffect(() => {
       if (isEdit) {
           axios
-              .get(`http://localhost:8000/api/v2/product/product/${id}`)
+              .get(`/api/v2/product/product/${id}`)
               .then((response) => {
                   const p = response.data.product;
                   setName(p.name);
@@ -74,25 +74,13 @@ const CreateProduct = () => {
 
         try {
           if (isEdit) {
-            const response = await axios.put(
-                `http://localhost:8000/api/v2/product/update-product/${id}`,
-                formData,
-                {
-                    headers: { "Content-Type": "multipart/form-data" },
-                }
-            );
+            const response = await axios.put(`/api/v2/product/update-product/${id}`,formData);
             if (response.status === 200) {
                 alert("Product updated successfully!");
                 navigate("/my-products");
             }
         } else {
-            const response = await axios.post(
-                "http://localhost:8000/api/v2/product/create-product",
-                formData,
-                {
-                    headers: { "Content-Type": "multipart/form-data" },
-                }
-            );
+            const response = await axios.post("/api/v2/product/create-product", formData);
             if (response.status === 201) {
                 alert("Product created successfully!");
                 setImages([]);
@@ -228,7 +216,21 @@ const CreateProduct = () => {
                             required={!isEdit}
                         />
                         <label htmlFor="upload" className="cursor-pointer">
-                            <AiOutlinePlusCircle size={30} color="#555" />
+                        <svg
+                                 width="30"
+                                 height="30"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 className="text-gray-600"
+                                 viewBox="0 0 24 24"
+                             >
+                                 <path
+                                     d="M12 4v16m8-8H4"
+                                     strokeWidth="2"
+                                     strokeLinecap="round"
+                                     strokeLinejoin="round"
+                                 />
+                             </svg>
                         </label>
                         <div className="flex flex-wrap mt-2">
                             {previewImages.map((img, index) => (

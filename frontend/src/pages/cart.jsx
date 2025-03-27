@@ -4,6 +4,7 @@ import CartProduct from '../components/auth/CartProduct';
 import NavBar from '../components/auth/nav';
 import { useNavigate } from 'react-router-dom'; // Import the useNavigate hook
 import { useSelector } from 'react-redux'; // Import useSelector from react-redux
+import axios from '../axiosConfig';
 
 const Cart = () => {
 
@@ -16,16 +17,10 @@ const Cart = () => {
     // Only fetch if email is available
     if (!email) return;
  
-    fetch(`http://localhost:8000/api/v2/product/cartproducts?email=${email}`)
+    axios.get(`/api/v2/product/cartproducts?email=${email}`)
       .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        setProducts(data.cart.map(product => ({ quantity: product['quantity'], ...product['productId'] })));
-        console.log("Products fetched:", data.cart);
+        setProducts(res.data.cart.map(product => ({quantity: product.quantity,...product.productId, })));
+        console.log("Products fetched:", res.data.cart);
       })
       .catch((err) => {
         console.error("Error fetching products:", err);

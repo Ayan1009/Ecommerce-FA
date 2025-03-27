@@ -1,10 +1,10 @@
 // OrderConfirmation.jsx
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import NavBar from '../components/auth/nav';
 import { useLocation, useNavigate } from 'react-router-dom';
 // 1) Import PayPalScriptProvider & PayPalButtons
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
+import axios from '../axiosConfig';
 
 const OrderConfirmation = () => {
     const location = useLocation();
@@ -25,26 +25,16 @@ const OrderConfirmation = () => {
         }   
         const fetchData = async () => {
             try {
-                // Fetch selected address
-                const addressResponse = await axios.get('http://localhost:8000/api/v2/user/addresses', {
-                    params: { email: email },
+                const addressResponse = await axios.get('/api/v2/user/addresses', {
+                    params: { email },
                 });
-                if (addressResponse.status !== 200) {
-                    throw new Error(`Failed to fetch addresses. Status: ${addressResponse.status}`);
-                }
-                const addressData = addressResponse.data;
-                const address = addressData.addresses.find(addr => addr._id === addressId);
-                if (!address) {
-                    throw new Error('Selected address not found.'); 
-                }
+                const address = addressResponse.data.addresses.find((a) => a._id === addressId);
+                if (!address) throw new Error('Selected address not found.');
                 setSelectedAddress(address);
-                // Fetch cart products from /cartproducts endpoint
-                const cartResponse = await axios.get('http://localhost:8000/api/v2/product/cartproducts', {
-                    params: { email: email },
+
+                const cartResponse = await axios.get('/api/v2/product/cartproducts', {
+                    params: { email },
                 });
-                if (cartResponse.status !== 200) {
-                    throw new Error(`Failed to fetch cart products. Status: ${cartResponse.status}`);
-                }
                 const cartData = cartResponse.data;
                 // Map cart items to include full image URLs
                 const processedCartItems = cartData.cart.map(item => ({
@@ -91,15 +81,14 @@ const OrderConfirmation = () => {
                  // Optionally store PayPal transaction details:
                 paypalOrderData,
             };
-            // Send POST request to place orders
-            const response = await axios.post('http://localhost:8000/api/v2/orders/place-order', payload);
-            console.log('Orders placed successfully:', response.data);
-
+            const response = await axios.post('/api/v2/orders/place-order', payload);
+            console.log('Order placed successfully:', response.data);
             // Navigate to an order success page or display a success message
             navigate('/order-success'); // Adjust route as needed
         } catch (error) {
             console.error('Error placing order:', error);
             // Optionally update error state to display an error message to the user
+            setError(error.response?.data?.message || error.message || 'An unexpected error occurred.');
         }
     };
     if (loading) {
