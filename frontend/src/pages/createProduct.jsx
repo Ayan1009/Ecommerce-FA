@@ -28,7 +28,7 @@ const CreateProduct = () => {
   useEffect(() => {
       if (isEdit) {
           axios
-              .get(`/api/v2/product/product/${id}`)
+              .get(`/api/v2/product/product/${id}`,{withCredentials: true,})
               .then((response) => {
                   const p = response.data.product;
                   setName(p.name);
@@ -74,13 +74,13 @@ const CreateProduct = () => {
 
         try {
           if (isEdit) {
-            const response = await axios.put(`/api/v2/product/update-product/${id}`,formData);
+            const response = await axios.put(`/api/v2/product/update-product/${id}`,formData,{withCredentials: true,});
             if (response.status === 200) {
                 alert("Product updated successfully!");
                 navigate("/my-products");
             }
         } else {
-            const response = await axios.post("/api/v2/product/create-product", formData);
+            const response = await axios.post("/api/v2/product/create-product", formData,{withCredentials: true,});
             if (response.status === 201) {
                 alert("Product created successfully!");
                 setImages([]);

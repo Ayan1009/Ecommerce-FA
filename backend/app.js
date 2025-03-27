@@ -10,7 +10,7 @@ const orders = require('./controller/orders');
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({origin: "https://glowing-blancmange-01fec4.netlify.app", credentials: true,}));
 app.use("/",express.static("uploads"));
 app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 

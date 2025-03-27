@@ -9,7 +9,7 @@ const [loading, setLoading] = useState(true); // For loading state
 const [error, setError] = useState(null); // For error handling
 
 useEffect(() => {
-  axios.get("/api/v2/product/get-products")
+  axios.get("/api/v2/product/get-products",{withCredentials: true,})
     .then((res) => {
       setProducts(res.data.products);
       setLoading(false);

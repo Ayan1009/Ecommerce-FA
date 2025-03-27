@@ -25,8 +25,9 @@ const OrderConfirmation = () => {
         }   
         const fetchData = async () => {
             try {
-                const addressResponse = await axios.get('/api/v2/user/addresses', {
+                const addressResponse = await axios.get('/api/v2/user/addresses',{
                     params: { email },
+                    withCredentials: true,
                 });
                 const address = addressResponse.data.addresses.find((a) => a._id === addressId);
                 if (!address) throw new Error('Selected address not found.');
@@ -34,6 +35,7 @@ const OrderConfirmation = () => {
 
                 const cartResponse = await axios.get('/api/v2/product/cartproducts', {
                     params: { email },
+                    withCredentials: true,
                 });
                 const cartData = cartResponse.data;
                 // Map cart items to include full image URLs
