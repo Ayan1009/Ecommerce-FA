@@ -29,7 +29,7 @@ const CreateAddress = () => {
             email,
         };
         try {
-            const response = await axios.post("/api/v2/user/add-address", addressData);
+            const response = await axios.post("/api/v2/user/add-address", addressData,{withCredentials: true,});
             if (response.status === 201) {
                 alert("Address added successfully!");
                 navigate("/profile");

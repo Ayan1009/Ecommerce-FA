@@ -17,7 +17,7 @@ const Cart = () => {
     // Only fetch if email is available
     if (!email) return;
  
-    axios.get(`/api/v2/product/cartproducts?email=${email}`)
+    axios.get(`/api/v2/product/cartproducts?email=${email}`,{withCredentials: true,})
       .then((res) => {
         setProducts(res.data.cart.map(product => ({quantity: product.quantity,...product.productId, })));
         console.log("Products fetched:", res.data.cart);

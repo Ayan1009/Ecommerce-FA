@@ -18,7 +18,7 @@ export default function ProductDetails() {
 	useEffect(() => {
 		const fetchProduct = async () => {
 			try {
-				const response = await axios.get(`/api/v2/product/product/${id}`);
+				const response = await axios.get(`/api/v2/product/product/${id}`,{withCredentials: true});
 				console.log("Fetched product:", response.data.product);
 				setProduct(response.data.product); // Ensure correct state setting
 				setLoading(false);
@@ -56,6 +56,7 @@ export default function ProductDetails() {
 					userId: email,
 					productId: id,
 					quantity: quantity,
+					withCredentials: true,
 				}
 			);
 			console.log("Added to cart:", response.data);

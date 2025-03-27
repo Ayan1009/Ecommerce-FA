@@ -16,7 +16,7 @@ console.log(state);
     useEffect(() => {
         // Only fetch if email is available
          if (!email) return;
-         axios.get(`/api/v2/product/my-products?email=${email}`)
+         axios.get(`/api/v2/product/my-products?email=${email}`,{withCredentials: true,})
             .then((res) => {
                 setProducts(res.data.products);
                 setLoading(false);
