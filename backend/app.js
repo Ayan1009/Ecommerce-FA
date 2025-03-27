@@ -8,14 +8,9 @@ const product= require('./controller/product')
 const path=require('path')
 const orders = require('./controller/orders');
 
-const corsOptions = {
-    origin: ['http://localhost:5173','https://ecommerce-fa-1.onrender.com'], // Allow only your frontend origin
-    credentials: true, // Allow cookies and credentials
-  };
-
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors(corsOptions));
+app.use(cors());
 app.use("/",express.static("uploads"));
 app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 
